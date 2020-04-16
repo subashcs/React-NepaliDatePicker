@@ -1,0 +1,43 @@
+.pick  li{
+   list-style: none;
+   display: inline;
+   padding:5px;
+   cursor: pointer;
+   font-weight: bold;
+}
+
+.pick{
+   overflow-x: scroll;
+   padding:5px;
+}
+
+.day-pick  table tr td {
+   list-style: none;
+   padding:5px;
+   cursor: pointer;
+}
+.day-pick{
+   padding-left:5px;
+}
+.apply-shadow{
+
+   margin:1px;
+   box-shadow:0px 0.5px 0.5px 0.5px rgb(221, 233, 238);
+}
+
+.day-pick{
+
+}
+
+.modal{
+   box-sizing: border-box;
+   border:1px solid transparent;
+   box-shadow:0px 0.5px 0.5px 0.5px;
+   width:270px;
+   border-bottom-left-radius: 2%;
+   border-bottom-right-radius: 2%;
+   border-top-left-radius: 0%;
+   border-top-right-radius: 2%;
+   padding:5px;
+   margin-top:3px;
+}
