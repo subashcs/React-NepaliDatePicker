@@ -71,6 +71,70 @@ var devanagariDigits = {
   "9": "९",
 };
 
+var validationFunctions = {
+  validateRequiredParameters: function (requiredParameters) {
+    var keys = Object.keys(requiredParameters);
+    for(let i=0; i<keys.length; i++){
+        let key = keys[i];
+        if (typeof requiredParameters[key] === "undefined" || requiredParameters[key] === null) {
+          throw new ReferenceError("Missing required parameters: " + Object.keys(requiredParameters).join(", "));
+      }
+    }
+  },
+  validateBsYear: function (bsYear) {
+      if (typeof bsYear !== "number" || bsYear === null) {
+          throw new TypeError("Invalid parameter bsYear value");
+      } else if (bsYear < calendarData.minBsYear || bsYear > calendarData.maxBsYear) {
+          throw new RangeError("Parameter bsYear value should be in range of " + calendarData.minBsYear + " to " + calendarData.maxBsYear);
+      }
+  },
+  validateAdYear: function (adYear) {
+      if (typeof adYear !== "number" || adYear === null) {
+          throw new TypeError("Invalid parameter adYear value");
+      } else if (adYear < calendarData.minBsYear - 57 || adYear > calendarData.maxBsYear - 57) {
+          throw new RangeError("Parameter adYear value should be in range of " + (calendarData.minBsYear - 57) + " to " + (calendarData.maxBsYear - 57));
+      }
+  },
+  validateBsMonth: function (bsMonth) {
+      if (typeof bsMonth !== "number" || bsMonth === null) {
+          throw new TypeError("Invalid parameter bsMonth value");
+      } else if (bsMonth < 1 || bsMonth > 12) {
+          throw new RangeError("Parameter bsMonth value should be in range of 1 to 12");
+      }
+  },
+  validateAdMonth: function (adMonth) {
+      if (typeof adMonth !== "number" || adMonth === null) {
+          throw new TypeError("Invalid parameter adMonth value");
+      } else if (adMonth < 1 || adMonth > 12) {
+          throw new RangeError("Parameter adMonth value should be in range of 1 to 12");
+      }
+  },
+  validateBsDate: function (bsDate) {
+      if (typeof bsDate !== "number" || bsDate === null) {
+          throw new TypeError("Invalid parameter bsDate value");
+      } else if (bsDate < 1 || bsDate > 32) {
+          throw new RangeError("Parameter bsDate value should be in range of 1 to 32");
+      }
+  },
+  validateAdDate: function (adDate) {
+      if (typeof adDate !== "number" || adDate === null) {
+          throw new TypeError("Invalid parameter adDate value");
+      } else if (adDate < 1 || adDate > 31) {
+          throw new RangeError("Parameter adDate value should be in range of 1 to 31");
+      }
+  },
+  validatePositiveNumber: function (numberParameters) {
+    let keys = Object.keys(numberParameters);
+      for(let i=0;i<keys.length;i++){
+        let key = keys[i];
+        if (typeof numberParameters[key] !== "number" || numberParameters[key] === null || numberParameters[key] < 0) {
+          throw new ReferenceError("Invalid parameters: " + Object.keys(numberParameters).join(", "));
+      } else if (key === "yearDiff" && numberParameters[key] > (calendarData.maxBsYear - calendarData.minBsYear + 1)) {
+          throw new RangeError("Parameter yearDiff value should be in range of 0 to " + (calendarData.maxBsYear - calendarData.minBsYear + 1));
+      }
+      }
+  }
+};
 
 const NepaliCalender = ({
   
@@ -78,16 +142,129 @@ const NepaliCalender = ({
   value,
   ...props
 }) => {
+  let readOnly = props.readOnly?props.readOnly :false;
+  let stripper = "/";
+  let dateOrder =["year","month","day"];
+  let date = new Date();
+  let today={
+    year:date.getFullYear(),
+    month:date.getMonth() + 1,
+    day:date.getDate()
+  }
+  
+  console.log("todddya,",today);
+  today = getBsDateByAdDate(today.year,today.month,today.day);
+  today={
+    year:toNepali(today.bsYear),
+    month:toNepali(toDateFormat(today.bsMonth)),
+    day:toNepali(toDateFormat(today.bsDate))
+  };
+
+  let newDefault =props.default;
+
+  if(typeof props.default==="string" ){
+    if(props.format){
+      if(props.format.charAt(0)==="Y"){
+        stripper = props.default.charAt(4);
+      }
+      else{
+        stripper =props.format.charAt(2);
+      }
+
+      try{
+        if(props.format ==="YYYY"+stripper+"MM"+stripper+"DD"){
+          newDefault = newDefault.split(stripper)
+          newDefault={ 
+           year :newDefault[0],
+           month:newDefault[1],
+           day:newDefault[2]
+          }
+          dateOrder =["year","month","day"];
+
+          console.log("matched format",newDefault);
+
+        }
+        else if(props.format ==="YYYY"+stripper+"DD"+stripper+"MM"){
+          newDefault = newDefault.split(stripper)
+          newDefault={ 
+           year :newDefault[0],
+           day:newDefault[1],
+           month:newDefault[2]
+          }
+          dateOrder =["year","day","month"];
+
+        }
+        
+        else if(props.format ==="MM"+stripper+"YYYY"+stripper+"DD"){
+          newDefault = newDefault.split(stripper)
+          newDefault={ 
+           month :newDefault[0],
+           year:newDefault[1],
+           day:newDefault[2]
+          }
+          dateOrder =["month","year","day"];
+
+        }
+        else if(props.format ==="MM"+stripper+"DD"+stripper+"YYYY"){
+          newDefault = newDefault.split(stripper)
+          newDefault={ 
+           month :newDefault[0],
+           day:newDefault[1],
+           year:newDefault[2]
+          }
+          dateOrder =["month","day","year"];
+
+        }
+        
+        else if(props.format ==="DD"+stripper+"MM"+stripper+"YYYY"){
+          newDefault =newDefault.split(stripper)
+          newDefault={ 
+           day :newDefault[0],
+           month:newDefault[1],
+           year:newDefault[2]
+          }
+          dateOrder =["day","month","year"];
+
+        }
+        else{
+            throw SyntaxError;
+        }
+
+      }
+      catch(err){
+        alert(err);
+      }
+      
+    }
+    else{
+      newDefault = newDefault.split(stripper)
+      newDefault={ 
+        year :newDefault[0],
+        month:newDefault[1],
+        day:newDefault[2]
+      }
+    }
+    
+  }
+ 
+
+  let defaultValue = newDefault || today;
+
   const [isPickerVisible, setIsPickerVisible] = useState(false);
-  const [day, setDay] = useState("०१");
-  const [month, setMonth] = useState("०१");
-  const [year, setYear] = useState("१९७०");
+  const [day, setDay] = useState(defaultValue.day);
+  const [month, setMonth] = useState(defaultValue.month);
+  const [year, setYear] = useState(defaultValue.year);
 
   const { modalInvisible, modalVisible } = styles;
   const wrapperRef = useRef(null);
-
+  
   useEffect(() => {
-    let dnew = year + "/" + month + "/" + day;
+    let currentDate = {
+      year,
+      month,
+      day
+    }
+    let dnew = currentDate[dateOrder[0]] + stripper + currentDate[dateOrder[1]] + stripper + currentDate[dateOrder[2]];
     let e = {
       target: {
         name: props.name,
@@ -95,8 +272,8 @@ const NepaliCalender = ({
       },
     };
     onChangeHandler(e);
-  }, [year, day, month, props.name, onChangeHandler]);
-
+  }, [year, day, month, props.name, onChangeHandler,dateOrder,stripper]);
+ 
   useOutsideAlerter(wrapperRef);
 
   function useOutsideAlerter(ref) {
@@ -116,71 +293,19 @@ const NepaliCalender = ({
     });
   }
 
-  var validationFunctions = {
-    validateRequiredParameters: function (requiredParameters) {
-      var keys = Object.keys(requiredParameters);
-      for(let i=0; i<keys.length; i++){
-          let key = keys[i];
-          if (typeof requiredParameters[key] === "undefined" || requiredParameters[key] === null) {
-            throw new ReferenceError("Missing required parameters: " + Object.keys(requiredParameters).join(", "));
-        }
-      }
-    },
-    validateBsYear: function (bsYear) {
-        if (typeof bsYear !== "number" || bsYear === null) {
-            throw new TypeError("Invalid parameter bsYear value");
-        } else if (bsYear < calendarData.minBsYear || bsYear > calendarData.maxBsYear) {
-            throw new RangeError("Parameter bsYear value should be in range of " + calendarData.minBsYear + " to " + calendarData.maxBsYear);
-        }
-    },
-    validateAdYear: function (adYear) {
-        if (typeof adYear !== "number" || adYear === null) {
-            throw new TypeError("Invalid parameter adYear value");
-        } else if (adYear < calendarData.minBsYear - 57 || adYear > calendarData.maxBsYear - 57) {
-            throw new RangeError("Parameter adYear value should be in range of " + (calendarData.minBsYear - 57) + " to " + (calendarData.maxBsYear - 57));
-        }
-    },
-    validateBsMonth: function (bsMonth) {
-        if (typeof bsMonth !== "number" || bsMonth === null) {
-            throw new TypeError("Invalid parameter bsMonth value");
-        } else if (bsMonth < 1 || bsMonth > 12) {
-            throw new RangeError("Parameter bsMonth value should be in range of 1 to 12");
-        }
-    },
-    validateAdMonth: function (adMonth) {
-        if (typeof adMonth !== "number" || adMonth === null) {
-            throw new TypeError("Invalid parameter adMonth value");
-        } else if (adMonth < 1 || adMonth > 12) {
-            throw new RangeError("Parameter adMonth value should be in range of 1 to 12");
-        }
-    },
-    validateBsDate: function (bsDate) {
-        if (typeof bsDate !== "number" || bsDate === null) {
-            throw new TypeError("Invalid parameter bsDate value");
-        } else if (bsDate < 1 || bsDate > 32) {
-            throw new RangeError("Parameter bsDate value should be in range of 1 to 32");
-        }
-    },
-    validateAdDate: function (adDate) {
-        if (typeof adDate !== "number" || adDate === null) {
-            throw new TypeError("Invalid parameter adDate value");
-        } else if (adDate < 1 || adDate > 31) {
-            throw new RangeError("Parameter adDate value should be in range of 1 to 31");
-        }
-    },
-    validatePositiveNumber: function (numberParameters) {
-      let keys = Object.keys(numberParameters);
-        for(let i=0;i<keys.length;i++){
-          let key = keys[i];
-          if (typeof numberParameters[key] !== "number" || numberParameters[key] === null || numberParameters[key] < 0) {
-            throw new ReferenceError("Invalid parameters: " + Object.keys(numberParameters).join(", "));
-        } else if (key === "yearDiff" && value > (calendarData.maxBsYear - calendarData.minBsYear + 1)) {
-            throw new RangeError("Parameter yearDiff value should be in range of 0 to " + (calendarData.maxBsYear - calendarData.minBsYear + 1));
-        }
-        }
-    }
-  };
-  
+  function toDateFormat(dm){
+   if(dm<10){
+     return "0"+dm;
+   }
+   return dm.toString();
+  }
+  function toNepali(str){
+    
+  return str.toString().replace(/[0123456789]/g, function (s) {
+    return devanagariDigits[s];
+  });
+}
+
   function getMonth(month){
     let bsMonthNepali = month;
     let bsMonthEnglish = bsMonthNepali.toString().replace(/[०१२३४५६७८९]/g, function (s) {
@@ -224,6 +349,7 @@ const NepaliCalender = ({
      console.log("weekDay",weekDay);
     return {weekDayInt,weekDay};
   }
+
    function getBsDateByAdDate(adYear, adMonth, adDate) {
     validationFunctions.validateRequiredParameters({"adYear": adYear, "adMonth": adMonth, "adDate": adDate});
     validationFunctions.validateAdYear(adYear);
@@ -277,12 +403,15 @@ const NepaliCalender = ({
       let in_np = i.toString().replace(/[0123456789]/g, function (s) {
         return devanagariDigits[s];
       });
+      let currentYear = year===in_np ;
+
       list.push(
         <li
           key={i}
           onClick={() => {
             setYear(in_np);
           }}
+          className={currentYear?"highlight":""}
         >
           {in_np}
         </li>
@@ -397,6 +526,7 @@ const NepaliCalender = ({
 
   const dayLoad = () => {
     let list = [];
+    let daylist=[];
     let weekDays = [];
 
     let weekDayStartFrom=getWeekDay(year,month,"01").weekDayInt; //note:to make weeday start from  base 0
@@ -411,7 +541,7 @@ const NepaliCalender = ({
       weekDays.push(<th key={`weekDay ${i}`}>{calendarData.bsDays[i]}</th>);
     }
 
-    list.push(weekDays);
+    list.push(<thead><tr>{weekDays}</tr></thead>);
 
     let weekDayTracker = 0;
 
@@ -420,13 +550,14 @@ const NepaliCalender = ({
 
       for (let j = 0; j < 7 && i <= bsMonthUpperDay; j++) {
         let in_np = i.toString();
+        
         if(i<10){
           in_np=0+i.toString();
         }
         in_np=in_np.replace(/[0123456789]/g, function (s) {
           return devanagariDigits[s];
         });
-
+        let currentDay = day===in_np ;
         if (weekDayTracker < weekDayStartFrom) {
           tempdays.push(<td key={weekDayTracker + "emptycell"}> </td>);
           weekDayTracker++;
@@ -437,6 +568,7 @@ const NepaliCalender = ({
               onClick={() => {
                 setDay(in_np);
               }}
+              className={currentDay?"highlight":""}
             >
               {in_np}
             </td>
@@ -444,9 +576,10 @@ const NepaliCalender = ({
           i++;
         }
       }
-      list.push(<tr>{tempdays}</tr>);
+      daylist.push(<tr>{tempdays}</tr>);
     }
     let table = [];
+    list.push(<tbody>{daylist}</tbody>);
     table.push(<table>{list}</table>);
     return table;
   };
@@ -462,6 +595,7 @@ const NepaliCalender = ({
       in_np=in_np.replace(/[0123456789]/g, function (s) {
         return devanagariDigits[s];
       });
+      let currentMonth = month===in_np ;
 
       list.push(
         <li
@@ -469,6 +603,7 @@ const NepaliCalender = ({
           onClick={() => {
             setMonth(in_np);
           }}
+          className={currentMonth?"highlight":""}
         >
           {element}
         </li>
@@ -477,14 +612,13 @@ const NepaliCalender = ({
     });
     return list;
   };
-
   return (
     <Fragment>
       <input
         type="text"
         name={props.name}
         value={value}
-        onFocus={() => setIsPickerVisible(true)}
+        onClick={()=>setIsPickerVisible(!readOnly && !isPickerVisible)}
         onChange={null}
         className={props.className ? props.className : null}
         readOnly

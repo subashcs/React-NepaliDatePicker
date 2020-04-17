@@ -5,12 +5,14 @@ const App =()=>{
  const [date, setDate] = useState("");
  const handleChange=(e)=>{
    setDate(e.target.value);
-   console.log(date);
+   console.log("latest date",date);
  }
     return(
                 <NepaliCalender
-                        min_year={1950}
                         value={date}
+                        readOnly={false}
+                        default = {"१२-१२-१९९९"}
+                        format={"MM-DD-YYYY"}
                         onChangeHandler={handleChange}
                     />
     );
