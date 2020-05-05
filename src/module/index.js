@@ -1,5 +1,5 @@
 import React ,{useState}from 'react';
-import { NepaliCalender } from '../lib';
+import { NepaliCalender,NepaliC } from '../lib';
 
 const App =()=>{
  const [date, setDate] = useState("");
@@ -7,14 +7,25 @@ const App =()=>{
    setDate(e.target.value);
    console.log("latest date",date);
  }
+//  <NepaliCalender
+//                         value={date}
+//                         readOnly={false}
+//                         default = {"१२-१२-१९९९"}
+//                         format={"MM-DD-YYYY"}
+//                         onChangeHandler={handleChange}
+//                     />
     return(
-                <NepaliCalender
-                        value={date}
-                        readOnly={false}
-                        default = {"१२-१२-१९९९"}
-                        format={"MM-DD-YYYY"}
-                        onChangeHandler={handleChange}
-                    />
+      <div>
+
+                    <NepaliC
+                    value={date}
+                    readOnly={false}
+                    default = {"१२-१२-१९९९"}
+                    format={"MM-DD-YYYY"}
+                    onChangeHandler={handleChange}
+                />
+      </div>
+
     );
 };
 

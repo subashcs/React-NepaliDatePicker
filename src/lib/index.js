@@ -1,3 +1,3 @@
 import NepaliCalender from './components/NepaliCalender';
-
-export {NepaliCalender}
+import NepaliC from './components/NepaliC';
+export {NepaliCalender , NepaliC}
