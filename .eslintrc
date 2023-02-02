@@ -8,6 +8,6 @@
     }
   },
   "rules": {
-    "semi": "error"
+    "semi": "off"
   }
 }
