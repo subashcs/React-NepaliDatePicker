@@ -1,6 +1,6 @@
 {
   "name": "nepali-js-calendar",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "keywords": ["react", "nepali date picker", "calendar", "nepali", "javascript"],
   "dependencies": {
     "sass": "^1.58.0",
