@@ -5,16 +5,29 @@ Nepali date picker UI input field component for React
 
 
 ```
-import { NepaliC } from "nepalidatepicker-react";
+import { NepaliC } from "ndp_react";
 
 ```
 
 ```
-   <NepaliC
+   <NepaliC.Calendar
         value={date}
         readOnly={false}
-        default={"१२-१२-१९९९"}
+        defaultDate={"१२-१२-१९९९"}
         format={"MM-DD-YYYY"}
         onChangeHandler={handleChange}
       />
+```
+
+## Date Converters
+
+### BS to AD Converter
+```
+  NepaliC.getBsDateByAdDate(today.year, today.month, today.day)
+```
+
+### AD to BS Converter
+
+```
+NepaliC.getAdDateByBsDate(bsYear, bsMonth, bsDate);
 ```

@@ -430,7 +430,7 @@ const NepaliCalendar = ({
   };
   console.debug("today in bs", today);
   let newDefault = defaultDate;
-  if (typeof defaultDate === "string") {
+  if (defaultDate && typeof defaultDate === "string") {
     if (format) {
       if (format.charAt(0) === "Y") {
         stripper = defaultDate.charAt(4);

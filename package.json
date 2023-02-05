@@ -1,6 +1,6 @@
 {
-  "name": "nepalidatepicker-react",
-  "version": "2.0.0",
+  "name": "ndp_react",
+  "version": "0.0.1",
   "dependencies": {
     "sass": "^1.58.0",
     "react": "^18.2.0",

@@ -20,7 +20,7 @@ const App = () => {
       <NepaliC.Calendar
         value={date}
         readOnly={false}
-        default={"१२-१२-१९९९"}
+        defaultDate={"१२-१२-१९९९"}
         format={"MM-DD-YYYY"}
         onChangeHandler={handleChange}
       />
