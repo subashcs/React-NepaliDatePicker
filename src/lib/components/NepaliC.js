@@ -487,8 +487,27 @@ function getTotalDaysNumFromMinBsYear(year, month, day) {
   return daysNumFromMinBsYear;
 }
 
-const NepaliCalendar = ({ onChangeHandler, value, ...props }) => {
-  let readOnly = props.readOnly ? props.readOnly : false;
+/**
+ *
+ * @param {onChangeHandler} onChangeHandler - The function that handles change in input date
+ * @param {string} value - input date value
+ * @param {boolean} [readOnly="false"] - Optional , boolean parameter to make input readOnly
+ * @param {string} format - input date custom format
+ * @param {string} defaultDate - default date value
+ * @param {string} name - input field name
+ * @param {string} className - custom className
+ * @returns {JSX.Element} NepaliCaleder React Component
+ */
+const NepaliCalendar = ({
+  onChangeHandler,
+  value,
+  readOnly = false,
+  format,
+  name,
+  className,
+  defaultDate,
+  ...props
+}) => {
   let stripper = "/";
   let dateOrder = ["year", "month", "day"];
   let date = new Date();
@@ -507,18 +526,18 @@ const NepaliCalendar = ({ onChangeHandler, value, ...props }) => {
   };
   console.debug("today in bs", today);
 
-  let newDefault = props.default;
+  let newDefault = defaultDate;
 
-  if (typeof props.default === "string") {
-    if (props.format) {
-      if (props.format.charAt(0) === "Y") {
-        stripper = props.default.charAt(4);
+  if (typeof defaultDate === "string") {
+    if (format) {
+      if (format.charAt(0) === "Y") {
+        stripper = defaultDate.charAt(4);
       } else {
-        stripper = props.format.charAt(2);
+        stripper = format.charAt(2);
       }
 
       try {
-        if (props.format === "YYYY" + stripper + "MM" + stripper + "DD") {
+        if (format === "YYYY" + stripper + "MM" + stripper + "DD") {
           newDefault = newDefault.split(stripper);
           newDefault = {
             year: newDefault[0],
@@ -528,10 +547,7 @@ const NepaliCalendar = ({ onChangeHandler, value, ...props }) => {
           dateOrder = ["year", "month", "day"];
 
           console.debug("matched format", newDefault);
-        } else if (
-          props.format ===
-          "YYYY" + stripper + "DD" + stripper + "MM"
-        ) {
+        } else if (format === "YYYY" + stripper + "DD" + stripper + "MM") {
           newDefault = newDefault.split(stripper);
           newDefault = {
             year: newDefault[0],
@@ -539,10 +555,7 @@ const NepaliCalendar = ({ onChangeHandler, value, ...props }) => {
             month: newDefault[2],
           };
           dateOrder = ["year", "day", "month"];
-        } else if (
-          props.format ===
-          "MM" + stripper + "YYYY" + stripper + "DD"
-        ) {
+        } else if (format === "MM" + stripper + "YYYY" + stripper + "DD") {
           newDefault = newDefault.split(stripper);
           newDefault = {
             month: newDefault[0],
@@ -550,10 +563,7 @@ const NepaliCalendar = ({ onChangeHandler, value, ...props }) => {
             day: newDefault[2],
           };
           dateOrder = ["month", "year", "day"];
-        } else if (
-          props.format ===
-          "MM" + stripper + "DD" + stripper + "YYYY"
-        ) {
+        } else if (format === "MM" + stripper + "DD" + stripper + "YYYY") {
           newDefault = newDefault.split(stripper);
           newDefault = {
             month: newDefault[0],
@@ -561,10 +571,7 @@ const NepaliCalendar = ({ onChangeHandler, value, ...props }) => {
             year: newDefault[2],
           };
           dateOrder = ["month", "day", "year"];
-        } else if (
-          props.format ===
-          "DD" + stripper + "MM" + stripper + "YYYY"
-        ) {
+        } else if (format === "DD" + stripper + "MM" + stripper + "YYYY") {
           newDefault = newDefault.split(stripper);
           newDefault = {
             day: newDefault[0],
@@ -612,12 +619,12 @@ const NepaliCalendar = ({ onChangeHandler, value, ...props }) => {
       currentDate[dateOrder[2]];
     let e = {
       target: {
-        name: props.name,
+        name: name,
         value: dnew,
       },
     };
     onChangeHandler(e);
-  }, [year, day, month, props.name, onChangeHandler, dateOrder, stripper]);
+  }, [year, day, month, name, onChangeHandler, dateOrder, stripper]);
 
   useOutsideAlerter(wrapperRef);
 
@@ -768,12 +775,13 @@ const NepaliCalendar = ({ onChangeHandler, value, ...props }) => {
     <Fragment>
       <input
         type="text"
-        name={props.name}
+        name={name}
         value={value}
         onClick={() => setIsPickerVisible(!readOnly && !isPickerVisible)}
         onChange={null}
-        className={props.className ? props.className : null}
+        className={className ? className : null}
         readOnly
+        {...props}
       />
 
       <div

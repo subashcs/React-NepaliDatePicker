@@ -509,8 +509,11 @@ function getAdDateByBsDate(bsYear, bsMonth, bsDate) {
 /**
  *
  * @param {onChangeHandler} onChangeHandler - The function that handles change in input date
- * @param {value} value - input date value
- * @param {readonly} [readOnly="false"] - Optional , boolean parameter to make input readOnly
+ * @param {string} value - input date value
+ * @param {boolean} [readOnly="false"] - Optional , boolean parameter to make input readOnly
+ * @param {string} format - input date custom format
+ * @param {string} name - input field name
+ * @param {string} className - custom className
  * @returns {JSX.Element} NepaliCaleder React Component
  */
 const NepaliCalendar = ({
