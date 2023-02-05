@@ -5,7 +5,7 @@ Nepali date picker UI input field component for React
 
 
 ```
-import { NepaliC } from "ndp-react";
+import { NepaliC } from "nepali-js-calendar";
 
 ```
 
