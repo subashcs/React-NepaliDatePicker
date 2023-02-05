@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NepaliCalender, NepaliC } from "../lib";
+import { NepaliCalendar, NepaliC } from "../lib";
 
 const App = () => {
   const [date, setDate] = useState("");
@@ -10,20 +10,20 @@ const App = () => {
 
   return (
     <div>
-      <NepaliCalender
+      {/* <NepaliCalendar.Calendar
         value={date}
         readOnly={false}
         defaultDate={"१२-१२-१९९९"}
         format={"MM-DD-YYYY"}
         onChangeHandler={handleChange}
-      />
-      {/* <NepaliC
+      /> */}
+      <NepaliC.Calendar
         value={date}
         readOnly={false}
         default={"१२-१२-१९९९"}
         format={"MM-DD-YYYY"}
         onChangeHandler={handleChange}
-      /> */}
+      />
       <h2>Selected Date</h2>
       <h2>{date}</h2>
     </div>
