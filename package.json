@@ -1,6 +1,7 @@
 {
   "name": "ndp_react",
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "keywords": ["react", "nepali date picker", "calendar", "nepali", "javascript"],
   "dependencies": {
     "sass": "^1.58.0",
     "react": "^18.2.0",
